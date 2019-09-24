@@ -1,0 +1,10 @@
+##########
+本文件介绍了用栈结构走迷宫。
+要求如下：1、输出迷宫地图
+         2、利用栈结构走出迷宫
+         3、输出走出迷宫的路径
+This document describes the labyrinth of using the stack structure.
+The requirements are as follows: 1. Output maze map
+                                 2. use the stack structure to get out of the maze
+                                 3. Output the path out of the maze
+##########
