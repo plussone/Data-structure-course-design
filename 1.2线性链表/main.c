@@ -1,8 +1,8 @@
-/*Êı¾İ½á¹¹µÚÒ»´Î×÷Òµ£ºÊµÏÖÁ´±íÉ¾³ıÖØ¸´ÔªËØ
-	18184204-¹ù¼ÑÒã  */
+/*æ•°æ®ç»“æ„ç¬¬ä¸€æ¬¡ä½œä¸šï¼šå®ç°é“¾è¡¨åˆ é™¤é‡å¤å…ƒç´ 
+	plussone  */
 #define _CRT_SECURE_NO_WARNINGS
 
-#define MAX_LENGTH 15//Á´±í×î´ó³¤¶È
+#define MAX_LENGTH 15//é“¾è¡¨æœ€å¤§é•¿åº¦
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,20 +10,20 @@
 
 typedef struct Node
 {
-	struct Node* next; //´¢´æ¿Õ¼ä»ùÖ·
-	int data; //´¢´æÊı¾İ
+	struct Node* next; //å‚¨å­˜ç©ºé—´åŸºå€
+	int data; //å‚¨å­˜æ•°æ®
 };
 
 struct Node* head = NULL;
 
-void InitList_Sq() //³õÊ¼»¯Á´±íL
+void InitList_Sq() //åˆå§‹åŒ–é“¾è¡¨L
 {
 	head = (struct Node*)malloc(sizeof(struct Node));
 	head->data = 0;
 	head->next = NULL;
 }
 
-void ListInsert_Sq(struct Node* L, int e) //Ôö¼Ó½Úµã
+void ListInsert_Sq(struct Node* L, int e) //å¢åŠ èŠ‚ç‚¹
 {
 	struct Node* pnew = (struct Node*)malloc(sizeof(struct Node));
 	L->next = pnew;
@@ -32,16 +32,16 @@ void ListInsert_Sq(struct Node* L, int e) //Ôö¼Ó½Úµã
 	head->data++;
 }
 
-void sjsc(struct Node* L) //¸øÁ´±íLËæ»úÉú³ÉÖµ
+void sjsc(struct Node* L) //ç»™é“¾è¡¨Léšæœºç”Ÿæˆå€¼
 {
 	for (int i = 0; i < MAX_LENGTH; i++)
 	{
-		ListInsert_Sq(L, rand() % 10); //Ëæ»úÌí¼Ó0-9Ö®¼äµÄÊı
+		ListInsert_Sq(L, rand() % 10); //éšæœºæ·»åŠ 0-9ä¹‹é—´çš„æ•°
 		L = L->next;
 	}
 }
 
-void Listprintf_Sq(struct Node* L) //Êä³öÁ´±íµÄÖµ
+void Listprintf_Sq(struct Node* L) //è¾“å‡ºé“¾è¡¨çš„å€¼
 {
 	while (L != NULL && L->next != NULL)
 	{
@@ -50,7 +50,7 @@ void Listprintf_Sq(struct Node* L) //Êä³öÁ´±íµÄÖµ
 	}
 }
 
-void ListDelete_Sq(struct Node* L) //É¾³ıÏßĞÔ±íÖĞµÄÖ¸¶¨ÔªËØ
+void ListDelete_Sq(struct Node* L) //åˆ é™¤çº¿æ€§è¡¨ä¸­çš„æŒ‡å®šå…ƒç´ 
 {
 	struct Node* pnew = L->next;
 	L->next = (pnew->next);
@@ -59,10 +59,10 @@ void ListDelete_Sq(struct Node* L) //É¾³ıÏßĞÔ±íÖĞµÄÖ¸¶¨ÔªËØ
 	return ;
 }
 
-void sccfz(struct Node* L) //É¾³ıÁ´±íÖĞµÄÖØ¸´Öµ
+void sccfz(struct Node* L) //åˆ é™¤é“¾è¡¨ä¸­çš„é‡å¤å€¼
 {
 	struct Node* pnew = L;
-	int vist[10]; //±ê¼ÇÊı×é
+	int vist[10]; //æ ‡è®°æ•°ç»„
 	memset(vist, 0, sizeof(vist));
 	while(L->next != NULL)
 	{
@@ -83,7 +83,7 @@ void sccfz(struct Node* L) //É¾³ıÁ´±íÖĞµÄÖØ¸´Öµ
 	}
 }
 
-void DestroyList() //´İ»ÙÁ´±í
+void DestroyList() //æ‘§æ¯é“¾è¡¨
 {
 	if (head == NULL)
 	{
@@ -99,13 +99,13 @@ void DestroyList() //´İ»ÙÁ´±í
 
 int main()
 {
-	InitList_Sq(); //³õÊ¼»¯ĞÂ±íL
-	sjsc(head); //Ëæ»úÉú³ÉÊı¾İ
-	printf("Á´±íµÄ³õÊ¼Êı¾İ£º");
-	Listprintf_Sq(head); //Êä³öÁ´±íµÄÖµ
-	printf("É¾³ıÖØ¸´ºóµÄÖµ£º");
+	InitList_Sq(); //åˆå§‹åŒ–æ–°è¡¨L
+	sjsc(head); //éšæœºç”Ÿæˆæ•°æ®
+	printf("é“¾è¡¨çš„åˆå§‹æ•°æ®ï¼š");
+	Listprintf_Sq(head); //è¾“å‡ºé“¾è¡¨çš„å€¼
+	printf("åˆ é™¤é‡å¤åçš„å€¼ï¼š");
 	sccfz(head);
-	Listprintf_Sq(head); //Êä³öÁ´±íµÄÖµ
+	Listprintf_Sq(head); //è¾“å‡ºé“¾è¡¨çš„å€¼
 	DestroyList(head);
 	return 0;
 }
