@@ -1,5 +1,5 @@
 /*数据结构第一次作业：实现顺序表的多个元素插入和删除
-	18184204-郭佳毅*/
+	plussone*/
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
