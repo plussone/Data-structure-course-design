@@ -1,5 +1,5 @@
-/*数据结构第二次作业：实现固定地图寻找出口路线
-	plussone  */
+/*数据结构第三次作业：实现固定地图寻找出口路线
+	 plussone */
 #define _CRT_SECURE_NO_WARNINGS
 
 #define STACK_INIT_SIZE 100//栈最初分配空间量
@@ -9,15 +9,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-int map[10000][10000], vis[10000][10000], dir[5][2] = { {0,0},{0,-1},{0,1},{1,0},{-1,0} }; //地图、标记、方向数组
+int map[10][10] = { 1,1,1,1,1,1,1,1,1,1,100000,0,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,100001,1,1};
+int vis[100][100], dir[4][2] = {{0,-1},{0,1},{1,0},{-1,0}}; //地图、标记、方向数组
 int a = 10, b = 10; //地图的宽和长
 int x1 = 1, y1 = 0, x2 = 1, y2 = 9; //起点和终点位置
+int flag = 0; //标记有无找到出口
 
 struct Node //迷宫节点
 {
 	int x; //x坐标
 	int y; //y坐标
-	int dirn; //来方向
 };
 
 struct SqStack
@@ -27,34 +28,33 @@ struct SqStack
 	int stacksize; //储存数据
 };
 
-int InitStack(struct SqStack* S) //初始化空栈S
+int InitStack(struct SqStack** S) //初始化空栈S
 {
-	S->base = (struct Node*)malloc(STACK_INIT_SIZE * sizeof(struct Node));
-	if (!S->base)
+	(*S)->base = (struct Node*)malloc(STACK_INIT_SIZE * sizeof(struct Node));
+	if (!(*S)->base)
 	{
 		return 0; //空间分配失败
 	}
-	S->stacksize = STACK_INIT_SIZE;
-	S->top = S->base;
+	(*S)->stacksize = STACK_INIT_SIZE;
+	(*S)->top = (*S)->base;
 	return 1;
 }
 
-int Push(struct SqStack* S, int x, int y, int d) //向栈顶插入新元素
+int Push(struct SqStack** S, int x, int y) //向栈顶插入新元素
 {
-	if ((S->top) - (S->base) >= S->stacksize)
+	if (((*S)->top) - ((*S)->base) >= (*S)->stacksize)
 	{
-		S->base = (struct Node*)realloc(S->base, (S->stacksize + STACKINCREMENT) * sizeof(struct Node)); //栈满，追加存储空间
-		if (!S->base)
+		(*S)->base = (struct Node*)realloc((*S)->base, ((*S)->stacksize + STACKINCREMENT) * sizeof(struct Node)); //栈满，追加存储空间
+		if (!(*S)->base)
 		{
 			return 0; //分配失败
 		}
-		S->top = S->base + S->stacksize;
-		S->stacksize += STACKINCREMENT;
+		(*S)->top = (*S)->base + (*S)->stacksize;
+		(*S)->stacksize += STACKINCREMENT;
 	}
-	S->top->x = x;
-	S->top->y = y;
-	S->top->dirn = d;
-	S->top++;
+	(*S)->top->x = x;
+	(*S)->top->y = y;
+	(*S)->top++;
 	return 1;
 }
 
@@ -82,7 +82,7 @@ struct Node* Pop(struct SqStack* S) //删除栈顶元素,并输出其值
 void SqStack_print(struct SqStack* S) //输出迷宫路线
 {
 	struct SqStack* L = (struct SqStack*)malloc(sizeof(struct SqStack)); //建立一个堆
-	if (!InitStack(L)) //初始化新表L
+	if (!InitStack(&L)) //初始化新表L
 	{
 		printf("建立空栈失败\n");
 		return;
@@ -92,7 +92,7 @@ void SqStack_print(struct SqStack* S) //输出迷宫路线
 	{
 		//printf("100");
 		now1 = Pop(S);
-		if (!Push(L, now1->x, now1->y, 0))
+		if (!Push(&L, now1->x, now1->y))
 		{
 			printf("添加新栈失败\n");
 			return;
@@ -102,31 +102,56 @@ void SqStack_print(struct SqStack* S) //输出迷宫路线
 	while (Gettop(L))
 	{
 		now1 = Pop(L);
-		printf("(%d,%d) ", now1->x + 1, now1->y + 1);
+		printf("(%d,%d) ", now1->y + 1, now1->x + 1);
 	}
 	free(now1);
 }
 
-void makemap()
+void map_find(struct Sqstack*S)
 {
-
-}
-
-void sacnfdata()
-{
-	printf("请输入迷宫的长和宽：");
-	scanf("%d%d", &b, &a);
-	printf("请输入起点位置：");
-	scanf("%d%d", &x1, &y2);
-	printf("请输入终点位置：");
-	scanf("%d%d", &x2, &y2);
-	system("cls");
+	
+	struct Node* now = (struct Node*)malloc(sizeof(struct Node)); //建立临时坐标结构体
+	if (Gettop(S) == NULL)
+	{
+		return;
+	}
+	now = Gettop(S);
+	if ((now->x == x2 && now->y == y2)||flag ==1)
+	{
+		flag = 1;
+		return;
+	}
+	for (int i = 0; i < 4; i++)
+	{
+		if (now->x + dir[i][0] < 0 || now->x + dir[i][0] >= a || now->y + dir[i][1] < 0 || now->y + dir[i][1] >= b) //下标越界
+		{
+			continue;
+		}
+		else if (map[now->x+dir[i][0]][now->y+dir[i][1]] == 1) //遇到墙返回
+		{
+			
+			continue;
+		}
+		else if ((vis[now->x + dir[i][0]][now->y + dir[i][1]] > vis[now->x][now->y]+1)|| vis[now->x + dir[i][0]][now->y + dir[i][1]]==0) //访问路径较短
+		{
+			vis[now->x + dir[i][0]][now->y + dir[i][1]] = vis[now->x][now->y] + 1;
+			if (!Push(&S, now->x + dir[i][0], now->y+dir[i][1])) //插入下一个方向
+			{
+				printf("添加新栈失败\n");
+				continue;
+			}
+			map_find(S);
+		}
+	}
+	if (flag == 0)
+	{
+		Pop(S);
+	}
 }
 
 int main()
 {
-	sacnfdata();
-	makemap();
+	printf("迷宫地图为：\n");
 	for (int i = 0; i < a; i++)
 	{
 		for (int j = 0; j < b; j++)
@@ -135,91 +160,39 @@ int main()
 			{
 				printf("  ");
 			}
-			else
+			else if(map[i][j]==1)
 			{
 				printf("█");
+			}
+			else if (map[i][j] == 100000)
+			{
+				printf("入");
+				x1 = i;
+				y1 = j;
+			}
+			else if (map[i][j] == 100001)
+			{
+				printf("出");
+				x2 = i;
+				y2 = j;
 			}
 		}
 		printf("\n");
 	}
 	struct SqStack* S = (struct SqStack*)malloc(sizeof(struct SqStack)); //建立一个栈堆
 	memset(vis, 0, sizeof(vis)); //初始化标记数组
-	if (!InitStack(S)) //初始化新表L
+	if (!InitStack(&S)) //初始化新表L
 	{
 		printf("建立空栈失败\n");
 		return 0;
 	}
-	struct Node* now = (struct Node*)malloc(sizeof(struct Node)); //建立临时坐标结构体
-	now->x = x1;
-	now->y = y1;
-	if (!Push(S, x1, y1, 1)) //入口进栈
+	if (!Push(&S, x1, y1)) //入口进栈
 	{
 		printf("添加新栈失败\n");
 		return 0;
 	}
-	int flag = 0; //有无路线标志
-	while (Gettop(S))
-	{
-		now = Gettop(S);
-		if (now->x == x2 && now->y == y2) //找到出口结束
-		{
-			flag = 1;
-			break;
-		}
-		else if (vis[now->x][now->y] == 5) //找不到下一个元素返回
-		{
-			Pop(S);
-			continue;
-		}
-		else
-		{
-			int d = 0; //来方向
-			if (vis[now->x][now->y] == 1)
-			{
-				d = 2;
-			}
-			else if (vis[now->x][now->y] == 2)
-			{
-				d = 1;
-			}
-			else if (vis[now->x][now->y] == 3)
-			{
-				d = 4;
-			}
-			else if (vis[now->x][now->y] == 4)
-			{
-				d = 3;
-			}
-			//printf("%d %d\n", now->x + dir[vis[now->x][now->y]][0], now->y + dir[vis[now->x][now->y]][1]);
-			if (now->x + dir[vis[now->x][now->y]][0] < 0 || now->x + dir[vis[now->x][now->y]][0] >= a || now->y + dir[vis[now->x][now->y]][1] < 0 || now->y + dir[vis[now->x][now->y]][1] >= b) //下标越界
-			{
-				vis[now->x][now->y]++;
-				continue;
-			}
-			else if (map[now->x][now->y] == 1 || now->dirn == vis[now->x][now->y] || vis[now->x][now->y] == 0) //遇到墙返回或遇到来方向返回或原地不动
-			{
-				//printf("1000\n");
-				vis[now->x][now->y]++;
-				continue;
-			}
-			else if (!Push(S, now->x + dir[vis[now->x][now->y]][0], now->y + dir[vis[now->x][now->y]][1], d)) //插入下一个方向
-			{
-				vis[now->x][now->y]++;
-				printf("添加新栈失败\n");
-				return 0;
-			}
-			//printf("%d %d\n", now->x, now->y);
-			vis[now->x][now->y]++;
-		}
-	}
-	/*for(int i =0;i<10;i++)
-	{
-		for (int j = 0; j < 10; j++)
-		{
-			printf("%d ", vis[i][j]);
-		}
-		printf("\n");
-	}*/
+	vis[x1][y1] = 1;
+	map_find(S);
 	if (flag == 0)
 	{
 		printf("迷宫没有通路\n");
