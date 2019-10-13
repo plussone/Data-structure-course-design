@@ -1,4 +1,4 @@
-/*数据结构第一次作业：实现链表删除重复元素
+/*数据结构第二次作业：实现链表删除有重复的元素
 	plussone  */
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -16,11 +16,11 @@ typedef struct Node
 
 struct Node* head = NULL;
 
-void InitList_Sq() //初始化链表L
+void InitList_Sq(struct Node** head) //初始化链表L
 {
-	head = (struct Node*)malloc(sizeof(struct Node));
-	head->data = 0;
-	head->next = NULL;
+	*head = (struct Node*)malloc(sizeof(struct Node));
+	(*head)->data = 0;
+	(*head)->next = NULL;
 }
 
 void ListInsert_Sq(struct Node* L, int e) //增加节点
@@ -50,21 +50,21 @@ void Listprintf_Sq(struct Node* L) //输出链表的值
 	}
 }
 
-void ListDelete_Sq(struct Node* L) //删除线性表中的指定元素
+void ListDelete_Sq(struct Node* L,struct Node* head) //删除线性表中的指定元素
 {
 	struct Node* pnew = L->next;
 	L->next = (pnew->next);
 	free(pnew);
 	head->data--;
-	return ;
+	return;
 }
 
-void sccfz(struct Node* L) //删除链表中的重复值
+void sccfz(struct Node* L,struct Node*head) //删除链表中的重复值
 {
 	struct Node* pnew = L;
 	int vist[10]; //标记数组
 	memset(vist, 0, sizeof(vist));
-	while(L->next != NULL)
+	while (L->next != NULL)
 	{
 		vist[(L->next)->data]++;
 		L = L->next;
@@ -74,7 +74,7 @@ void sccfz(struct Node* L) //删除链表中的重复值
 	{
 		if (vist[(L->next)->data] > 1)
 		{
-			ListDelete_Sq(L);
+			ListDelete_Sq(L,head);
 		}
 		else
 		{
@@ -83,31 +83,29 @@ void sccfz(struct Node* L) //删除链表中的重复值
 	}
 }
 
-void DestroyList() //摧毁链表
+void DestroyList(struct Node* head) //摧毁链表
 {
 	if (head == NULL)
 	{
-		return ;
+		return;
 	}
-	while(head->next != NULL)
+	while (head->next != NULL)
 	{
-		ListDelete_Sq(head);
+		ListDelete_Sq(head,head);
 	}
 	free(head);
-	return ;
+	return;
 }
 
 int main()
 {
-	InitList_Sq(); //初始化新表L
+	InitList_Sq(&head); //初始化新表L
 	sjsc(head); //随机生成数据
 	printf("链表的初始数据：");
 	Listprintf_Sq(head); //输出链表的值
 	printf("删除重复后的值：");
-	sccfz(head);
+	sccfz(head,head);
 	Listprintf_Sq(head); //输出链表的值
 	DestroyList(head);
 	return 0;
 }
-
-
