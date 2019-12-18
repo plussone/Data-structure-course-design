@@ -1,4 +1,4 @@
-
+/***************数据结构第二次上机作业-lift-plussone***************/
 #include<stdio.h>
 #include<time.h>
 #include<stdlib.h>
