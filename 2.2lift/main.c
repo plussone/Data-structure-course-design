@@ -5,34 +5,34 @@
 #include<windows.h>
 #include<string.h>
 #include<malloc.h>
-#define MaxSize 5   //µçÌİËùÄÜ³ĞÔØµÄ×î´óÈËÊı
+#define MaxSize 5   //ç”µæ¢¯æ‰€èƒ½æ‰¿è½½çš„æœ€å¤§äººæ•°
 #define N 5
 
-typedef struct        //************************** ³Ë¿Í½á¹¹Ìå
+typedef struct        //************************** ä¹˜å®¢ç»“æ„ä½“
 {
-	int FloorofPerson;    //³Ë¿ÍËùÔÚÂ¥²ã
-	int GoFloor;         //³Ë¿ÍÒªÈ¥Â¥²ã
-	int WaitingTime;      //³Ë¿ÍµÄ×î´óÈİÈÌµÈ´ıÊ±¼ä
-	/*int Direction;        //·½Ïò
-	int InorOut;          //³Ë¿ÍÊÇ·ñÒÑ³öµçÌİ
-	int Leave;            //³Ë¿ÍÊÇ·ñÀëÈ¥*/
-	int WaitedTime;       //³Ë¿ÍÒÑ¾­µÈ´ıµÄÊ±¼ä
+	int FloorofPerson;    //ä¹˜å®¢æ‰€åœ¨æ¥¼å±‚
+	int GoFloor;         //ä¹˜å®¢è¦å»æ¥¼å±‚
+	int WaitingTime;      //ä¹˜å®¢çš„æœ€å¤§å®¹å¿ç­‰å¾…æ—¶é—´
+	/*int Direction;        //æ–¹å‘
+	int InorOut;          //ä¹˜å®¢æ˜¯å¦å·²å‡ºç”µæ¢¯
+	int Leave;            //ä¹˜å®¢æ˜¯å¦ç¦»å»*/
+	int WaitedTime;       //ä¹˜å®¢å·²ç»ç­‰å¾…çš„æ—¶é—´
 }Person;
 
-typedef struct      //******************************µçÌİ½á¹¹Ìå
+typedef struct      //******************************ç”µæ¢¯ç»“æ„ä½“
 {
-	int Floor;                //ËùÔÚÂ¥²ã
-	int State;    //ÔËĞĞ·½Ïò×´Ì¬,-1ÏòÏÂ£¬0Í£Áô£¬1ÏòÏÂ
-	int NumberofPerson;       //×°ÔØ³Ë¿ÍÈËÊı
+	int Floor;                //æ‰€åœ¨æ¥¼å±‚
+	int State;    //è¿è¡Œæ–¹å‘çŠ¶æ€,-1å‘ä¸‹ï¼Œ0åœç•™ï¼Œ1å‘ä¸‹
+	int NumberofPerson;       //è£…è½½ä¹˜å®¢äººæ•°
 }Elevator;
 
-Person Passenger[10][10];  //È«¾Ö½á¹¹Ìå¶şÎ¬Êı×é±£´æÕû¶°Â¥µÄ³Ë¿ÍµÄÏà¹ØĞÅÏ¢
+Person Passenger[10][10];  //å…¨å±€ç»“æ„ä½“äºŒç»´æ•°ç»„ä¿å­˜æ•´æ ‹æ¥¼çš„ä¹˜å®¢çš„ç›¸å…³ä¿¡æ¯
 
-Person PassengerInElevator[15];   //ÔÚµçÌİÖĞµÄ³Ë¿ÍµÄÏà¹ØĞÅÏ¢´æ´¢ÔÚ½á¹¹ÌåÒ»Î¬Êı×éÖĞ
+Person PassengerInElevator[15];   //åœ¨ç”µæ¢¯ä¸­çš„ä¹˜å®¢çš„ç›¸å…³ä¿¡æ¯å­˜å‚¨åœ¨ç»“æ„ä½“ä¸€ç»´æ•°ç»„ä¸­
 
-Person PassengerOutElevator[MaxSize]; //ÏÂµçÌİµÄ³Ë¿Í
+Person PassengerOutElevator[MaxSize]; //ä¸‹ç”µæ¢¯çš„ä¹˜å®¢
 
-Elevator left; //¶¨ÒåµçÌİ
+Elevator left; //å®šä¹‰ç”µæ¢¯
 
 int map[18][35] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 				   1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,
@@ -51,16 +51,16 @@ int map[18][35] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 				   1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,
 			       1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 				   1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 
-				   1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}; //µçÌİÇé¿öÊı×é
-int b[10];            //Ã¿²ãÂ¥µÄÈËÊı
-/*int InCount[9];      //Ã¿²ãÂ¥½øÈëµçÌİµÄÊµ¼ÊÈËÊı
-int OutCount[9];     //Ã¿²ãÂ¥×ß³öµçÌİµÄÊµ¼ÊÈËÊı*/
-int tclock = 0;        //µçÌİÔËĞĞÊ±µÄÈ«¾ÖÈíÊ±ÖÓ
-int add_t = 0;		   //µçÌİÃ¿²ãÔËĞĞµÄÊ±ÖÓ
-/*int InTime[9];    //Ã¿²ãÂ¥³Ë¿Í½øÈëµçÌİµÄÊ±¼ä
-int OutTime[9];      //Ã¿²ãÂ¥³Ë¿Í³öµçÌİµÄÊ±¼ä*/
+				   1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}; //ç”µæ¢¯æƒ…å†µæ•°ç»„
+int b[10];            //æ¯å±‚æ¥¼çš„äººæ•°
+/*int InCount[9];      //æ¯å±‚æ¥¼è¿›å…¥ç”µæ¢¯çš„å®é™…äººæ•°
+int OutCount[9];     //æ¯å±‚æ¥¼èµ°å‡ºç”µæ¢¯çš„å®é™…äººæ•°*/
+int tclock = 0;        //ç”µæ¢¯è¿è¡Œæ—¶çš„å…¨å±€è½¯æ—¶é’Ÿ
+int add_t = 0;		   //ç”µæ¢¯æ¯å±‚è¿è¡Œçš„æ—¶é’Ÿ
+/*int InTime[9];    //æ¯å±‚æ¥¼ä¹˜å®¢è¿›å…¥ç”µæ¢¯çš„æ—¶é—´
+int OutTime[9];      //æ¯å±‚æ¥¼ä¹˜å®¢å‡ºç”µæ¢¯çš„æ—¶é—´*/
 
-void view(int chat,int d) //Êä³öµ±Ç°Çé¿ö
+void view(int chat,int d) //è¾“å‡ºå½“å‰æƒ…å†µ
 {
 	system("cls");
 	for (int i = 0; i < 17; i++)
@@ -69,7 +69,7 @@ void view(int chat,int d) //Êä³öµ±Ç°Çé¿ö
 		{
 			if (map[i][j])
 			{
-				printf("¡ö");
+				printf("â– ");
 			}
 			else
 			{
@@ -191,7 +191,7 @@ void view(int chat,int d) //Êä³öµ±Ç°Çé¿ö
 	Sleep(700);
 }
 
-void reset(int a,int x,int p) //É¾³ıµÈ´ıµÄÈË»òÕßµçÌİÖĞµÄÈË
+void reset(int a,int x,int p) //åˆ é™¤ç­‰å¾…çš„äººæˆ–è€…ç”µæ¢¯ä¸­çš„äºº
 {
 	if (a)
 	{
@@ -210,7 +210,7 @@ void reset(int a,int x,int p) //É¾³ıµÈ´ıµÄÈË»òÕßµçÌİÖĞµÄÈË
 	}
 }
 
-int add_time(int time) //µÈ´ıÊ±¼äÔö¼Ó
+int add_time(int time) //ç­‰å¾…æ—¶é—´å¢åŠ 
 {
 	for (int i = 1; i <= 5; i++)
 	{
@@ -225,7 +225,7 @@ int add_time(int time) //µÈ´ıÊ±¼äÔö¼Ó
 				reset(0, i, j);
 				j--;
 				view(i,0);
-				printf("µ±Ç°Ê±¼ä%d		ÔÚ%d²ã³¬Ê±Àë¿ªÒ»ÈË\n", tclock, i);
+				printf("å½“å‰æ—¶é—´%d		åœ¨%då±‚è¶…æ—¶ç¦»å¼€ä¸€äºº\n", tclock, i);
 				Sleep(700);
 			}
 		}
@@ -234,46 +234,46 @@ int add_time(int time) //µÈ´ıÊ±¼äÔö¼Ó
 	return 0;
 }
 
-int In(int y, int x,int d)      //³Ë¿Í½øÈëµçÌİ,Ã¿´Î³Ë¿Í½øÈëµçÌİºó½«¸Ã²ãµÄ³Ë¿ÍÖØĞÂÅÅĞò( y±íÊ¾µçÌİµ±Ç°ÈËÊı£»x±íÊ¾Â¥²ã)
+int In(int y, int x,int d)      //ä¹˜å®¢è¿›å…¥ç”µæ¢¯,æ¯æ¬¡ä¹˜å®¢è¿›å…¥ç”µæ¢¯åå°†è¯¥å±‚çš„ä¹˜å®¢é‡æ–°æ’åº( yè¡¨ç¤ºç”µæ¢¯å½“å‰äººæ•°ï¼›xè¡¨ç¤ºæ¥¼å±‚)
 {
-	int m = y;           //±£´æµçÌİµ±Ç°ÈËÊı
+	int m = y;           //ä¿å­˜ç”µæ¢¯å½“å‰äººæ•°
 	for (int p = 0; p < b[x]; p++)
 	{
-		if ((Passenger[x][p].GoFloor > x && d>=0) ||(Passenger[x][p].GoFloor < x && d <= 0))//¸Ãx²ã³Ë¿ÍpµÄ·½ÏòÓëµçÌİ·½ÏòÒ»ÖÂÇÒÎ´Àë¿ª£¬ÈôµçÌİÎ´Âú£¬Ôò½øµçÌİ
+		if ((Passenger[x][p].GoFloor > x && d>=0) ||(Passenger[x][p].GoFloor < x && d <= 0))//è¯¥xå±‚ä¹˜å®¢pçš„æ–¹å‘ä¸ç”µæ¢¯æ–¹å‘ä¸€è‡´ä¸”æœªç¦»å¼€ï¼Œè‹¥ç”µæ¢¯æœªæ»¡ï¼Œåˆ™è¿›ç”µæ¢¯
 		{
 			if (m == MaxSize)
 			{
-				break;                 //¸ÃÂ¥²ãµÄÆäËû³Ë¿ÍµÈ´ıÒ»¶ÎÊ±¼ä
+				break;                 //è¯¥æ¥¼å±‚çš„å…¶ä»–ä¹˜å®¢ç­‰å¾…ä¸€æ®µæ—¶é—´
 			}
 			PassengerInElevator[m] = Passenger[x][p];
-			m++;                        //µçÌİÄÚÈËÊıÔö¼Ó
-			reset(0,x,p); //É¾³ıµçÌİÍâµÄÈË
+			m++;                        //ç”µæ¢¯å†…äººæ•°å¢åŠ 
+			reset(0,x,p); //åˆ é™¤ç”µæ¢¯å¤–çš„äºº
 			p--;
 			tclock += 2;
 			add_t += 2;
 			view(0,0);
-			printf("µ±Ç°Ê±¼ä%d		µçÌİÔÚ%d²ã½øÈëÒ»ÈË\n",tclock,x);
+			printf("å½“å‰æ—¶é—´%d		ç”µæ¢¯åœ¨%då±‚è¿›å…¥ä¸€äºº\n",tclock,x);
 			Sleep(700);
 		}
 	}
 	return m;
 }
 
-int Out(int floor, int number)    //³Ë¿Í³öµçÌİ£¬Ã¿´Î³Ë¿Í³öµçÌİ½«È«¾ÖÊı×éÖĞµÄ³Ë¿ÍĞÅÏ¢ÖØĞÂĞŞ¸Ä£¬floor±íÊ¾Â¥²ã£¬number±íÊ¾µçÌİÄÚÈËÊı
+int Out(int floor, int number)    //ä¹˜å®¢å‡ºç”µæ¢¯ï¼Œæ¯æ¬¡ä¹˜å®¢å‡ºç”µæ¢¯å°†å…¨å±€æ•°ç»„ä¸­çš„ä¹˜å®¢ä¿¡æ¯é‡æ–°ä¿®æ”¹ï¼Œfloorè¡¨ç¤ºæ¥¼å±‚ï¼Œnumberè¡¨ç¤ºç”µæ¢¯å†…äººæ•°
 {
-	int k = number;//µçÌİÄÚÊ£ÓàµÄÈË 
+	int k = number;//ç”µæ¢¯å†…å‰©ä½™çš„äºº 
 	for (int i = 0; i < MaxSize; i++)
 	{
 		if (PassengerInElevator[i].GoFloor == floor)
 		{
 			PassengerOutElevator[number - k]= PassengerInElevator[i];
 			k--;
-			reset(1, 0, i); //É¾³ıµçÌİÖĞÏÂÀ´µÄÈË
+			reset(1, 0, i); //åˆ é™¤ç”µæ¢¯ä¸­ä¸‹æ¥çš„äºº
 			tclock += 2;
 			add_t += 2;
 			i--;
 			view(0,0);
-			printf("µ±Ç°Ê±¼ä%d		µçÌİÔÚ%d²ã³öÈ¥Ò»ÈË\n", tclock,floor);
+			printf("å½“å‰æ—¶é—´%d		ç”µæ¢¯åœ¨%då±‚å‡ºå»ä¸€äºº\n", tclock,floor);
 			Sleep(700);
 		}
 	}
@@ -281,25 +281,25 @@ int Out(int floor, int number)    //³Ë¿Í³öµçÌİ£¬Ã¿´Î³Ë¿Í³öµçÌİ½«È«¾ÖÊı×éÖĞµÄ³Ë¿Í
 	return k;
 }
 
-void Open()            //µçÌİ¿ªÃÅ
+void Open()            //ç”µæ¢¯å¼€é—¨
 {
 	tclock += 2;
 	add_t += 2;
 	view(0,0);
-	printf("µ±Ç°Ê±¼ä%d		µçÌİÔÚ%d²ã¿ªÃÅ\n", tclock, left.Floor);
+	printf("å½“å‰æ—¶é—´%d		ç”µæ¢¯åœ¨%då±‚å¼€é—¨\n", tclock, left.Floor);
 	Sleep(700);
 }
 
-void Close()           //µçÌİ¹ØÃÅ
+void Close()           //ç”µæ¢¯å…³é—¨
 {
 	tclock += 2;
 	add_t += 2;
 	view(0,0);
-	printf("µ±Ç°Ê±¼ä%d		µçÌİÔÚ%d²ã¹ØÃÅ\n", tclock, left.Floor);
+	printf("å½“å‰æ—¶é—´%d		ç”µæ¢¯åœ¨%då±‚å…³é—¨\n", tclock, left.Floor);
 	Sleep(700);
 }
 
-int Go(Elevator* ele)           //µçÌİÕıÔÚÔËĞĞ
+int Go(Elevator* ele)           //ç”µæ¢¯æ­£åœ¨è¿è¡Œ
 {
 	Elevator* e = ele;	
 	if (e->State == 1)
@@ -315,13 +315,13 @@ int Go(Elevator* ele)           //µçÌİÕıÔÚÔËĞĞ
 		if (e->State == 1)
 		{
 			view(0, -1*i * e->State);			
-			printf("µçÌİÕıÔÚÏòÉÏÔËĞĞ!!!!!!!\n");
+			printf("ç”µæ¢¯æ­£åœ¨å‘ä¸Šè¿è¡Œ!!!!!!!\n");
 			Sleep(700);
 		}
 		else if (e->State == -1)
 		{
 			view(0, -1*i * e->State);
-			printf("µçÌİÕıÔÚÏòÏÂÔËĞĞ!!!!!!!\n");
+			printf("ç”µæ¢¯æ­£åœ¨å‘ä¸‹è¿è¡Œ!!!!!!!\n");
 			Sleep(700);
 		}
 		tclock += 1;
@@ -330,10 +330,10 @@ int Go(Elevator* ele)           //µçÌİÕıÔÚÔËĞĞ
 	return (e->Floor);
 }
 
-void Initialize()            //ÏµÍ³×î¿ªÊ¼µÄ³õÊ¼»¯
+void Initialize()            //ç³»ç»Ÿæœ€å¼€å§‹çš„åˆå§‹åŒ–
 {
-	srand(time(0));          //»ñÈ¡Ê±¼äÖÖ×Ó
-	for (int i = 1; i <= 5; i++)//Ã¿²ãÂ¥µÄÈËÊıËæ»ú³õÊ¼»¯
+	srand(time(0));          //è·å–æ—¶é—´ç§å­
+	for (int i = 1; i <= 5; i++)//æ¯å±‚æ¥¼çš„äººæ•°éšæœºåˆå§‹åŒ–
 	{
 		b[i] = rand() % N;
 		for (int k = 0; k < b[i]; k++)
@@ -351,7 +351,7 @@ void Initialize()            //ÏµÍ³×î¿ªÊ¼µÄ³õÊ¼»¯
 	}
 }
 
-int Test()             // ¿¼²éÕû¶°Â¥ÓĞÎŞÇëÇó  £¬ÎŞ·µ»Ø0£¬ÓĞ·µ»Ø1£»
+int Test()             // è€ƒæŸ¥æ•´æ ‹æ¥¼æœ‰æ— è¯·æ±‚  ï¼Œæ— è¿”å›0ï¼Œæœ‰è¿”å›1ï¼›
 {
 	for (int cs = 1; cs < 5; cs++)
 		if (b[cs] != 0)
@@ -359,7 +359,7 @@ int Test()             // ¿¼²éÕû¶°Â¥ÓĞÎŞÇëÇó  £¬ÎŞ·µ»Ø0£¬ÓĞ·µ»Ø1£»
 	return 0;
 }
 
-void innew() //Éú³ÉĞÂ³Ë¿Í
+void innew() //ç”Ÿæˆæ–°ä¹˜å®¢
 {
 	int i;
 	B:
@@ -379,17 +379,17 @@ void innew() //Éú³ÉĞÂ³Ë¿Í
 		}
 		b[i]++;
 		view(i,0);
-		printf("µ±Ç°Ê±¼ä%d		ÓĞÒ»Ãû³Ë¿ÍÀ´µ½%d²ã\n", tclock, i);
+		printf("å½“å‰æ—¶é—´%d		æœ‰ä¸€åä¹˜å®¢æ¥åˆ°%då±‚\n", tclock, i);
 		Sleep(700);
 }
 
-void Run(Elevator* left) //µçÌİÔËĞĞÅĞ¶Ï
+void Run(Elevator* left) //ç”µæ¢¯è¿è¡Œåˆ¤æ–­
 {
 	Elevator* ts = left;
-	int floor = ts->Floor;    //±£´æµçÌİµ±Ç°µÄËùÔÚÂ¥²ãÊı
-	int number = ts->NumberofPerson;   //±£´æµçÌİµ±Ç°µÄÈËÊı
+	int floor = ts->Floor;    //ä¿å­˜ç”µæ¢¯å½“å‰çš„æ‰€åœ¨æ¥¼å±‚æ•°
+	int number = ts->NumberofPerson;   //ä¿å­˜ç”µæ¢¯å½“å‰çš„äººæ•°
 	int flag = 0;
-	//Ñ­»·´ÎÊı
+	//å¾ªç¯æ¬¡æ•°
 
 	while (flag != 15)
 	{
@@ -397,14 +397,14 @@ void Run(Elevator* left) //µçÌİÔËĞĞÅĞ¶Ï
 		{
 			innew();
 		}
-		if (!Test()&&!number)    //¿¼²éÕû¶°Â¥ÓĞÎŞÇëÇó  £¬ÎŞ·µ»Ø0£¬ÓĞ·µ»Ø1;
+		if (!Test()&&!number)    //è€ƒæŸ¥æ•´æ ‹æ¥¼æœ‰æ— è¯·æ±‚  ï¼Œæ— è¿”å›0ï¼Œæœ‰è¿”å›1;
 		{
 			flag++;
 			tclock += 2;
 			add_t = add_time(2);
 			ts->State = 0;
 			view(0,0);
-			printf("µ±Ç°Ê±¼ä:%d		µçÌİÔÚ%d²ã¿ÕÏĞµÈ´ı\n", tclock, floor);
+			printf("å½“å‰æ—¶é—´:%d		ç”µæ¢¯åœ¨%då±‚ç©ºé—²ç­‰å¾…\n", tclock, floor);
 			Sleep(700);
 		}
 		else
@@ -431,21 +431,21 @@ void Run(Elevator* left) //µçÌİÔËĞĞÅĞ¶Ï
 			}
 			flag = 0;
 			int bs = 0;
-			//printf("ÔÚ%ldÊ±¿ÌµçÌİÕıÔÚµÚ%d²ã!\n", (double)(tclock*0.1), floor);
+			//printf("åœ¨%ldæ—¶åˆ»ç”µæ¢¯æ­£åœ¨ç¬¬%då±‚!\n", (double)(tclock*0.1), floor);
 			for (int i = 0; i < number; i++)
 				if (PassengerInElevator[i].GoFloor != floor)
 					bs++;
 			/*printf("%d,%d %d %d\n", floor, b[floor], bs, number);
 			system("pause");*/
-			if (b[floor] == 0 && bs == number)    //µçÌİÍâÃ»ÈË£¬Ã»ÈËÏÂ
+			if (b[floor] == 0 && bs == number)    //ç”µæ¢¯å¤–æ²¡äººï¼Œæ²¡äººä¸‹
 			{
 				add_t=add_time(add_t);
-				//µçÌİ²»¿ªÃÅ£¬¼ÌĞøÉÏÉı»òÏÂ½µ
+				//ç”µæ¢¯ä¸å¼€é—¨ï¼Œç»§ç»­ä¸Šå‡æˆ–ä¸‹é™
 				int ofloor = floor;
-				floor = Go(ts);      //µçÌİÒÆ¶¯
-				printf("µ±Ç°Ê±¼ä%d		Ã»ÈËÔÚ%d²ãÉÏÏÂµçÌİ£¬µçÌİ¼ÌĞøÔËĞĞ\n",tclock,ofloor);
+				floor = Go(ts);      //ç”µæ¢¯ç§»åŠ¨
+				printf("å½“å‰æ—¶é—´%d		æ²¡äººåœ¨%då±‚ä¸Šä¸‹ç”µæ¢¯ï¼Œç”µæ¢¯ç»§ç»­è¿è¡Œ\n",tclock,ofloor);
 			}
-			else //µçÌİÒªÉÏÏÂÈË
+			else //ç”µæ¢¯è¦ä¸Šä¸‹äºº
 			{
 				add_t=add_time(add_t);
 				Open();
@@ -459,9 +459,9 @@ void Run(Elevator* left) //µçÌİÔËĞĞÅĞ¶Ï
 	}
 }
 
-int main()//Ö÷º¯Êı
+int main()//ä¸»å‡½æ•°
 {
-	left.State = 0;                   //µçÌİ³õÊ¼»¯
+	left.State = 0;                   //ç”µæ¢¯åˆå§‹åŒ–
 	left.Floor = 1;
 	left.NumberofPerson = 0;
 	Initialize();
