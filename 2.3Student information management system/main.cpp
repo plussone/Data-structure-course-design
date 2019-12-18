@@ -1,4 +1,5 @@
-﻿#include <stdio.h>
+/***********数据结构第三次上机Student information management system plussone***********/
+#include <stdio.h>
 #include <malloc.h>
 #include <stdlib.h>
 #include <string.h>
