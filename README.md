@@ -5,4 +5,5 @@ HDU数据结构课程设计作业：
 1.2、链表删除重复节点
 2.1、利用栈结构走迷宫
 2.2、lift
+2.3、Student information management system
 #
